@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const SignupPage: React.FC = () => {
   const {
@@ -16,10 +17,9 @@ const SignupPage: React.FC = () => {
   const passwordValue = watch("password", "");
   const router = useRouter();
 
+  // Check if user is already logged in
   useEffect(() => {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("userToken="));
+    const token = Cookies.get("userToken");
     if (token) {
       router.push("/home");
     }
@@ -27,7 +27,7 @@ const SignupPage: React.FC = () => {
 
   const onSubmit = (data: any) => {
     console.log("Signup data submitted:", data);
-    document.cookie = "userToken=sample_token; path=/";
+    Cookies.set("userToken", "sample_token", { path: "/", expires: 7 }); // Set token for 7 days
     router.push("/home");
   };
 
