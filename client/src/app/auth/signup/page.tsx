@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const SignupPage: React.FC = () => {
   const {
@@ -13,9 +14,21 @@ const SignupPage: React.FC = () => {
 
   const emailValue = watch("email", "");
   const passwordValue = watch("password", "");
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("userToken="));
+    if (token) {
+      router.push("/home");
+    }
+  }, [router]);
 
   const onSubmit = (data: any) => {
     console.log("Signup data submitted:", data);
+    document.cookie = "userToken=sample_token; path=/";
+    router.push("/home");
   };
 
   return (
@@ -84,7 +97,7 @@ const SignupPage: React.FC = () => {
         </form>
         <p className="text-sm text-center text-gray-600 mt-4">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-500 hover:underline">
+          <Link href="/auth/login" className="text-blue-500 hover:underline">
             Login
           </Link>
         </p>

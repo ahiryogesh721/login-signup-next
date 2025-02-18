@@ -1,7 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const LoginPage: React.FC = () => {
   const {
@@ -13,9 +15,19 @@ const LoginPage: React.FC = () => {
 
   const emailValue = watch("email", "");
   const passwordValue = watch("password", "");
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = Cookies.get("userToken");
+    if (token) {
+      router.push("/home");
+    }
+  }, [router]);
 
   const onSubmit = (data: any) => {
     console.log("Login data submitted:", data);
+    Cookies.set("userToken", "sample_token", { path: "/", expires: 7 }); // Set token for 7 days
+    router.push("/home");
   };
 
   return (
